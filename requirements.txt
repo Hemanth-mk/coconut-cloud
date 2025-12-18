@@ -1,8 +1,2 @@
-fastapi
-uvicorn
-torch
-opencv-python-headless
-numpy
-pillow
-ultralytics
-python-multipart
+flask
+gunicorn
