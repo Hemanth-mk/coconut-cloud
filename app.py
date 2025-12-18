@@ -1,14 +1,33 @@
-from fastapi import FastAPI, File, UploadFile
-from inference import predict_image
+from flask import Flask, request, jsonify
+from disease_info import disease_data
+import os
 
-app = FastAPI()
+app = Flask(__name__)
 
-@app.get("/")
-def root():
-    return {"status": "Coconut Disease API Running"}
+@app.route("/")
+def home():
+    return "Coconut Disease API is running"
 
-@app.post("/predict")
-async def predict(file: UploadFile = File(...)):
-    image_bytes = await file.read()
-    result = predict_image(image_bytes)
-    return result
+@app.route("/predict", methods=["POST"])
+def predict():
+    data = request.get_json()
+    label = data.get("label")
+
+    if not label:
+        return jsonify({"error": "No label provided"}), 400
+
+    info = disease_data.get(label.lower())
+
+    if not info:
+        return jsonify({"error": "Disease not found"}), 404
+
+    return jsonify({
+        "disease": label,
+        "info": info
+    })
+
+if __name__ == "__main__":
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 8000))
+    )
