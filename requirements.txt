@@ -1,5 +1,6 @@
 flask
-ultralytics
-torch
-opencv-python-headless
+flask-cors
 numpy
+opencv-python-headless
+ultralytics
+gunicorn
