@@ -6,12 +6,15 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Coconut Disease API running"
+    return "Coconut Disease API is running"
 
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.get_json()
+
     label = data.get("label")
+    if not label:
+        return jsonify({"error": "No label provided"}), 400
 
     info = disease_data.get(label.lower())
     if not info:
@@ -23,4 +26,4 @@ def predict():
     })
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
